@@ -6,7 +6,7 @@ import datetime
 import os
 from functools import wraps
 import json
-# from waitress import serve
+from waitress import serve
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})  # Enable CORS for all routes
 
@@ -435,5 +435,11 @@ if __name__ == '__main__':
     print("   - POST /api/nearby-doctors")
     print("\n🚀 Press CTRL+C to stop the server\n")
     
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    # app.run(debug=True, host='0.0.0.0', port=5000)
     # serve(app, host='0.0.0.0', port=5000)
+    try:
+        # Try to use Waitress (production server)
+        serve(app, host='0.0.0.0', port=5000, threads=4)
+    except ImportError:
+        # Fallback to Flask dev server
+        app.run(debug=True, host='0.0.0.0', port=5000, use_reloader=False)
